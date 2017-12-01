@@ -1,8 +1,6 @@
 ﻿using System;
 using System.IO;
-using System.Text;
-using Mono.Unix;
-using Mono.Unix.Native;
+using System.Runtime.InteropServices;
 
 namespace RPi.I2C.Net
 {
@@ -19,7 +17,7 @@ namespace RPi.I2C.Net
 		{
 			int res= I2CNativeLib.OpenBus(busPath);
 			if (res< 0)
-				throw new IOException(String.Format("Error opening bus '{0}': {1}", busPath, UnixMarshal.GetErrorDescription(Stdlib.GetLastError())));
+				throw new IOException(String.Format("Error opening bus '{0}': {1}", busPath, "error details"));
 			
 			busHandle = res;
 		}
@@ -92,7 +90,7 @@ namespace RPi.I2C.Net
 		{
 			int res= I2CNativeLib.WriteBytes(busHandle, address, bytes, bytes.Length);
 			if (res== -1)
-				throw new IOException(String.Format("Error accessing address '{0}': {1}", address, UnixMarshal.GetErrorDescription(Stdlib.GetLastError())));
+				throw new IOException(String.Format("Error accessing address '{0}': {1}", address, "error details"));
 			if (res== -2)
 				throw new IOException(String.Format("Error writing to address '{0}': I2C transaction failed", address));
 		}
@@ -157,7 +155,7 @@ namespace RPi.I2C.Net
 			byte[] buf = new byte[count];
 			int res= I2CNativeLib.ReadBytes(busHandle, address, buf, buf.Length);
 			if (res== -1)
-				throw new IOException(String.Format("Error accessing address '{0}': {1}", address, UnixMarshal.GetErrorDescription(Stdlib.GetLastError())));
+				throw new IOException(String.Format("Error accessing address '{0}': {1}", address, "error details"));
 			if (res<= 0)
 				throw new IOException(String.Format("Error reading from address '{0}': I2C transaction failed", address));
 
